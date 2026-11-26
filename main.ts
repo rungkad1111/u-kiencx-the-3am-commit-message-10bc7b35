@@ -19,16 +19,18 @@ const OUT = "/output/entry.txt";
 // 1 to 139 characters, not only white space — plus the task's own rule of
 // one line and nothing else. Refuse to write anything that fails it, so a
 // bad edit can never ship a disqualified entry.
-if (
-  COMMIT.length < 1 ||
-  COMMIT.length > 139 ||
-  COMMIT.trim().length === 0 ||
-  COMMIT.includes("\n")
-) {
-  throw new Error(
-    `commit message fails the gate: ${COMMIT.length} chars`,
-  );
+function assertValidLine(line: string): void {
+  if (
+    line.length < 1 ||
+    line.length > 139 ||
+    line.trim().length === 0 ||
+    line.includes("\n")
+  ) {
+    throw new Error(`commit message fails the gate: ${line.length} chars`);
+  }
 }
+
+assertValidLine(COMMIT);
 
 mkdirSync(dirname(OUT), { recursive: true });
 writeFileSync(OUT, COMMIT + "\n", "utf8");
